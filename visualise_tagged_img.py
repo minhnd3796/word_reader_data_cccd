@@ -117,7 +117,7 @@ def extract_word_img(json_dict, field_name, img, base_filename):
             w = rect[2]
             h = rect[3]
             word_img = img[y: y + h, x: x + w]
-            word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
+            word_img_filename = str(counter) + '_' + base_filename + IMG_EXT
             cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
             f.write(word_img_filename + '\t' + str_label + '\n')
         f.close()
@@ -132,9 +132,9 @@ for json_filename in os.listdir(JSON_DIR):
         draw_boxes(data, field, img)
     cv2.imwrite(os.path.join(BOXES_JPG_DIR, jpg_filename), img) """
     base_filename = os.path.splitext(jpg_filename)[0]
-    extract_word_img(data, 'ID', img, base_filename)
-    extract_word_img(data, 'name', img, base_filename)
-    extract_word_img(data, 'DOB', img, base_filename)
+    # extract_word_img(data, 'ID', img, base_filename)
+    # extract_word_img(data, 'name', img, base_filename)
+    # extract_word_img(data, 'DOB', img, base_filename)
     extract_word_img(data, 'address', img, base_filename)
 
     print('>>', jpg_filename)
