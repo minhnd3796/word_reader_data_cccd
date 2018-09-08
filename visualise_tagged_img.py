@@ -57,13 +57,30 @@ def extract_word_img(json_dict, field_name, img, base_filename):
             h = rect[3]
             word_img = img[y: y + h, x: x + w]
             word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
-            cv2.imwrite(os.path.join(WORD_IMG_DIR, IMG_EXT[1:], word_img_filename), word_img)
-            f.write(word_img_filename + '\t' + str_label)
+            cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
+            f.write(word_img_filename + '\t' + str_label + '\n')
         f.close()
     elif field_name == 'DOB':
         label_pairs = get_label(json_dict, field_name)
         f = open(os.path.join(WORD_IMG_DIR, field_name, ANNOTATION_FILENAME), 'a')
-        for counter, item in enumerate(label_pairs, 1):
+        counter = 1
+        item = label_pairs[0]
+        str_label = item[0]
+        rect = item[1]
+        x = rect[0]
+        y = rect[1]
+        w = rect[2]
+        h = rect[3]
+        word_img = img[y: y + h, x: x + w]
+        word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
+        cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
+        f.write(word_img_filename + '\t' + str_label + '\n')
+        f.close()
+        label_pairs = get_label(json_dict, 'doe')
+        if len(label_pairs) == 1:
+            counter = 2
+            f = open(os.path.join(WORD_IMG_DIR, field_name, ANNOTATION_FILENAME), 'a')
+            item = label_pairs[0]
             str_label = item[0]
             rect = item[1]
             x = rect[0]
@@ -72,11 +89,10 @@ def extract_word_img(json_dict, field_name, img, base_filename):
             h = rect[3]
             word_img = img[y: y + h, x: x + w]
             word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
-            cv2.imwrite(os.path.join(WORD_IMG_DIR, IMG_EXT[1:], word_img_filename), word_img)
-            f.write(word_img_filename + '\t' + str_label)
-        f.close()
-
-        field_name = 'doe'
+            cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
+            f.write(word_img_filename + '\t' + str_label + '\n')
+            f.close()
+    elif field_name == 'address':
         label_pairs = get_label(json_dict, field_name)
         f = open(os.path.join(WORD_IMG_DIR, field_name, ANNOTATION_FILENAME), 'a')
         for counter, item in enumerate(label_pairs, 1):
@@ -88,14 +104,23 @@ def extract_word_img(json_dict, field_name, img, base_filename):
             h = rect[3]
             word_img = img[y: y + h, x: x + w]
             word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
-            cv2.imwrite(os.path.join(WORD_IMG_DIR, IMG_EXT[1:], word_img_filename), word_img)
-            f.write(word_img_filename + '\t' + str_label)
+            cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
+            f.write(word_img_filename + '\t' + str_label + '\n')
         f.close()
-
-
-        
-
-
+        label_pairs = get_label(json_dict, 'home')
+        f = open(os.path.join(WORD_IMG_DIR, field_name, ANNOTATION_FILENAME), 'a')
+        for counter, item in enumerate(label_pairs, 1):
+            str_label = item[0]
+            rect = item[1]
+            x = rect[0]
+            y = rect[1]
+            w = rect[2]
+            h = rect[3]
+            word_img = img[y: y + h, x: x + w]
+            word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
+            cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
+            f.write(word_img_filename + '\t' + str_label + '\n')
+        f.close()
 
 for json_filename in os.listdir(JSON_DIR):
     with open(os.path.join(JSON_DIR, json_filename)) as f:
@@ -106,5 +131,10 @@ for json_filename in os.listdir(JSON_DIR):
     """ for field in FIELD_COLOUR.keys():
         draw_boxes(data, field, img)
     cv2.imwrite(os.path.join(BOXES_JPG_DIR, jpg_filename), img) """
+    base_filename = os.path.splitext(jpg_filename)[0]
+    extract_word_img(data, 'ID', img, base_filename)
+    extract_word_img(data, 'name', img, base_filename)
+    extract_word_img(data, 'DOB', img, base_filename)
+    extract_word_img(data, 'address', img, base_filename)
 
     print('>>', jpg_filename)
