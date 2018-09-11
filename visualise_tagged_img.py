@@ -109,7 +109,8 @@ def extract_word_img(json_dict, field_name, img, base_filename):
         f.close()
         label_pairs = get_label(json_dict, 'home')
         f = open(os.path.join(WORD_IMG_DIR, field_name, ANNOTATION_FILENAME), 'a')
-        for counter, item in enumerate(label_pairs, 1):
+        old_counter = counter
+        for counter, item in enumerate(label_pairs, old_counter + 1):
             str_label = item[0]
             rect = item[1]
             x = rect[0]
@@ -117,7 +118,7 @@ def extract_word_img(json_dict, field_name, img, base_filename):
             w = rect[2]
             h = rect[3]
             word_img = img[y: y + h, x: x + w]
-            word_img_filename = str(counter) + '_' + base_filename + IMG_EXT
+            word_img_filename = base_filename + '_' + str(counter) + IMG_EXT
             cv2.imwrite(os.path.join(WORD_IMG_DIR, field_name, IMG_EXT[1:], word_img_filename), word_img)
             f.write(word_img_filename + '\t' + str_label + '\n')
         f.close()
@@ -128,13 +129,9 @@ for json_filename in os.listdir(JSON_DIR):
     jpg_filename = json_filename.replace('.json', IMG_EXT)
     img = cv2.imread(os.path.join(JPG_DIR, jpg_filename))
 
-    """ for field in FIELD_COLOUR.keys():
+    for field in FIELD_COLOUR.keys():
         draw_boxes(data, field, img)
-    cv2.imwrite(os.path.join(BOXES_JPG_DIR, jpg_filename), img) """
+    cv2.imwrite(os.path.join(BOXES_JPG_DIR, jpg_filename), img)
     base_filename = os.path.splitext(jpg_filename)[0]
-    # extract_word_img(data, 'ID', img, base_filename)
-    # extract_word_img(data, 'name', img, base_filename)
-    # extract_word_img(data, 'DOB', img, base_filename)
-    extract_word_img(data, 'address', img, base_filename)
 
     print('>>', jpg_filename)
